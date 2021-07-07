@@ -25,3 +25,21 @@ router.put('/api/workouts/:id', ({ body, params }, res) => {
     });
 });
 
+router.get('/api/workouts', (req, res) => {
+    Workout.aggregate ([
+        {
+            $addFields: {
+                totalDuration: {
+                    $sum: '$exercises.duration',
+                }
+            }
+        }
+    ])
+    .then((dbWorkouts) => {
+        res.json(dbWorkouts);
+    })
+    .catch ((err) => {
+        res.json(err);
+    })
+}
+)
